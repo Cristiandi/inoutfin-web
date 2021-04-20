@@ -37,10 +37,12 @@ export default createStore({
     },
     async setCurrentUser ({ commit }, user) {
       // TODO: get the user info from API
+      const myInfo = await usersService.myInfo({ authUid: user.uid });
 
       // set user in state
       commit('setUser', {
-        ...user
+        ...user,
+        ...myInfo
       });
     },
     handleShowNavbar ({ commit }, showNavbar) {

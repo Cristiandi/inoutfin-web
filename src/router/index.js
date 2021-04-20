@@ -6,6 +6,7 @@ import { auth } from '../firebase';
 import LoggedOut from '../views/LoggedOut.vue';
 import Register from '../views/Register.vue';
 import Login from '../views/Login.vue';
+import ResetPassword from '../views/ResetPassword.vue';
 import Home from '../views/Home.vue';
 import Profile from '../views/Profile.vue';
 
@@ -24,6 +25,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword
   },
   {
     path: '/home',

@@ -9,8 +9,6 @@ export const sleep = (ms = 0) =>
 * @returns {any}
 */
 export const getFromObjectPathParsed = (object = {}, path = '') => {
-  console.log(JSON.stringify(object));
-
   const keysToEvaluete = path.split('.');
 
   let iteraingObject = object;
@@ -52,6 +50,12 @@ export const getErrorMessage = (object = {}) => {
 
   if (typeof innerResponse === 'number') {
     const { status } = exception;
+
+    if (typeof status === 'string') {
+      message = status;
+      return message;
+    }
+
     message = status.map(item => item).join(' | ');
 
     return message;

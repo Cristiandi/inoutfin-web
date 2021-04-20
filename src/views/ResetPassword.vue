@@ -4,12 +4,12 @@
       <div
         class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2"
       >
-        <router-link to="/" class="link-dark">
+        <router-link to="/login" class="link-dark">
           <BIconArrowLeft width="32" height="32" />
         </router-link>
 
         <div class="centered">
-          <h1 class="text-center">Iniciar sesión</h1>
+          <h1 class="text-center">Reiniciar clave</h1>
           <Form
             @submit="onSubmit"
             v-slot="{ errors }"
@@ -39,38 +39,6 @@
               </div>
             </div>
 
-            <div>
-              <div class="row">
-                <div class="col-6">
-                  <label for="password" class="fw-bold">Clave</label>
-                </div>
-                <div class="col-6 text-end">
-                  <small for="password" class="text-muted fw-light">
-                    Que sea segura.
-                  </small>
-                </div>
-              </div>
-              <div class="">
-                <Field
-                  type="password"
-                  class="form-control"
-                  id="password"
-                  name="password"
-                  as="input"
-                  v-model="data.password"
-                />
-                <small class="validation">{{ errors.password }}</small>
-              </div>
-            </div>
-
-            <div class="text-end">
-              <small class="text-muted fw-light">
-                <router-link to="/reset-password">
-                  ¿Olvidaste tú clave?
-                </router-link>
-              </small>
-            </div>
-
             <div v-if="message">
               <pre></pre>
 
@@ -98,7 +66,7 @@
             <div v-if="!loading">
               <pre></pre>
               <button type="submit" class="btn btn-dark form-control">
-                GO
+                ENVIAR CORREO
               </button>
             </div>
           </Form>
@@ -143,15 +111,15 @@ import { Field, Form } from 'vee-validate';
 import { BIconArrowLeft } from 'bootstrap-icons-vue';
 
 import { loginUser } from '../modules/users/schemas/login-user.schema';
-import { getFromObjectPathParsed } from '../utils';
+import { usersService } from '../modules/users/users.service';
+import { getErrorMessage } from '../utils';
 
 export default {
-  name: 'Login',
+  name: 'ResetPasswrod',
   data () {
     return {
       data: {
-        email: '',
-        password: ''
+        email: ''
       },
       state: '',
       loading: false,
@@ -168,29 +136,24 @@ export default {
   },
   methods: {
     async onSubmit (args) {
-      this.message = '';
       this.loading = true;
 
       try {
-        const { email, password } = this.data;
+        const { email } = this.data;
 
-        await this.$store.dispatch('login', {
-          email,
-          password
+        const { message } = await usersService.resetPassword({ email });
+
+        this.$toast.success(message, {
+          position: 'top-right',
+          queue: false
         });
       } catch (error) {
         this.state = 'error';
 
-        await this.$store.dispatch('logout');
-
-        this.$toast.error(
-          getFromObjectPathParsed(error, 'response.data.message') ||
-            error.message,
-          {
-            position: 'top-right',
-            queue: false
-          }
-        );
+        this.$toast.error(getErrorMessage(error) || error.message, {
+          position: 'top-right',
+          queue: false
+        });
       }
 
       this.loading = false;

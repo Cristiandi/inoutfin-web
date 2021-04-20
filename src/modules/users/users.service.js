@@ -1,13 +1,11 @@
-import { gql, GraphQLClient } from 'graphql-request';
+import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
 import { auth } from '../../firebase';
 // import { sleep } from '../../utils';
 
 class UsersService {
-  async register ({ fullName, email, phoneNumber, password, confirmPassword }) {
-    console.log('GraphQLClient', GraphQLClient);
-
+  async register ({ fullName, email, phoneNumber, password }) {
     const graphQLClient = await getClient();
 
     const mutation = gql`
@@ -59,6 +57,64 @@ class UsersService {
 
   async logout () {
     if (auth.currentUser) await auth.signOut();
+  }
+
+  async myInfo ({ authUid }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getByAuthUid ($authUid: String!) {
+        getUserByAuthUid (
+          getUserByAuthUidInput: {
+            authUid: $authUid
+          }
+        ) {
+          id
+          authUid
+          fullName
+          email
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      authUid
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    if (!data.getUserByAuthUid) {
+      throw new Error('myInfo | can\'t get the data.getUserByAuthUid.');
+    }
+
+    return data.getUserByAuthUid;
+  }
+
+  async resetPassword ({ email }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation resetPassword ($email: String!) {
+        resetUserPassword (
+          resetUserPasswordInput: {
+            email: $email
+          }
+        )
+      }
+    `;
+
+    const variables = {
+      email
+    };
+
+    await graphQLClient.request(mutation, variables);
+
+    return {
+      message: 'Te enviamos un correo!'
+    };
   }
 }
 
