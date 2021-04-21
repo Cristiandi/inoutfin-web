@@ -31,7 +31,7 @@ export default createStore({
       await usersService.logout();
 
       // clear user and redirect to /
-      commit('setUser', {});
+      commit('setUser', undefined);
 
       router.push('/');
     },

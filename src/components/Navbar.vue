@@ -31,7 +31,7 @@ import {
 
 export default {
   name: 'Navbar',
-  data () {},
+  // data () {},
   components: {
     BIconPerson,
     BIconDashCircle,

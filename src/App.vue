@@ -1,5 +1,5 @@
 <template>
-  <Navbar v-if="currentUser" />
+  <Navbar v-if="currentUser?.uid" />
   <router-view/>
 </template>
 
@@ -27,8 +27,7 @@ export default {
     Navbar
   },
   computed: mapState({
-    user: state => state.user,
-    showSideBar: state => state.showSideBar
+    user: state => state.user
   }),
   created () {
     this.unsubscribe = this.$store.subscribe((mutation, state) => {

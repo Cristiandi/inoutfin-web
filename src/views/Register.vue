@@ -135,22 +135,6 @@
               </div>
             </div>
 
-            <div v-if="message">
-              <pre></pre>
-
-              <div
-                class="alert"
-                role="alert"
-                :class="
-                  state === 'ok'
-                    ? 'alert-success text-center'
-                    : 'alert-danger text-center'
-                "
-              >
-                {{ message }}
-              </div>
-            </div>
-
             <div v-if="loading" class="text-center">
               <pre></pre>
 
@@ -213,9 +197,7 @@ export default {
         password: '',
         confirmPassword: ''
       },
-      state: '',
-      loading: false,
-      message: ''
+      loading: false
     };
   },
   components: {
@@ -228,7 +210,6 @@ export default {
   },
   methods: {
     async onSubmit (args) {
-      this.message = '';
       this.loading = true;
 
       try {
@@ -240,15 +221,11 @@ export default {
           confirmPassword: this.data.confirmPassword
         });
 
-        this.state = 'ok';
-        // this.message = message;
         this.$toast.success(message, {
           position: 'top-right',
           queue: false
         });
       } catch (error) {
-        this.state = 'error';
-
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',
           queue: false

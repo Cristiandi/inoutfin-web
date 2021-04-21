@@ -24,7 +24,7 @@ auth.onAuthStateChanged(user => {
       .mount('#app');
   }
 
-  if (user) {
+  if (user && user.emailVerified) {
     router.push('/home');
 
     store.dispatch('setCurrentUser', user)

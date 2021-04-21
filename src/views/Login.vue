@@ -71,22 +71,6 @@
               </small>
             </div>
 
-            <div v-if="message">
-              <pre></pre>
-
-              <div
-                class="alert"
-                role="alert"
-                :class="
-                  state === 'ok'
-                    ? 'alert-success text-center'
-                    : 'alert-danger text-center'
-                "
-              >
-                {{ message }}
-              </div>
-            </div>
-
             <div v-if="loading" class="text-center">
               <pre></pre>
 
@@ -153,9 +137,7 @@ export default {
         email: '',
         password: ''
       },
-      state: '',
-      loading: false,
-      message: ''
+      loading: false
     };
   },
   components: {
@@ -168,10 +150,9 @@ export default {
   },
   methods: {
     async onSubmit (args) {
-      this.message = '';
-      this.loading = true;
-
       try {
+        this.loading = true;
+
         const { email, password } = this.data;
 
         await this.$store.dispatch('login', {
@@ -179,10 +160,6 @@ export default {
           password
         });
       } catch (error) {
-        this.state = 'error';
-
-        await this.$store.dispatch('logout');
-
         this.$toast.error(
           getFromObjectPathParsed(error, 'response.data.message') ||
             error.message,
@@ -191,9 +168,9 @@ export default {
             queue: false
           }
         );
+      } finally {
+        this.loading = false;
       }
-
-      this.loading = false;
     }
   }
 };

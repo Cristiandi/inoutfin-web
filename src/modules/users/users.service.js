@@ -49,8 +49,89 @@ class UsersService {
     };
   }
 
+  async update ({ fullName, authUid }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation update (
+        $authUid: String!
+        $fullName: String!
+      ) {
+        updateUser (
+          updateUserInput: {
+            authUid: $authUid
+            fullName: $fullName
+          }
+        ) {
+          id
+          authUid
+          email
+          fullName
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      fullName,
+      authUid
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data,
+      message: 'Tus datos han sido actualizados.'
+    };
+  }
+
+  async changeEmail ({ authUid, email }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation change (
+        $authUid: String!
+        $email: String!
+      ) {
+        changeUserEmail (
+          changeUserEmailInput: {
+            authUid: $authUid,
+            email: $email
+          }
+        ) {
+          id
+          authUid
+          fullName
+          email
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      authUid,
+      email
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data,
+      message: 'El email ha sido actualizado, tú sesión se cerrará.'
+    };
+  }
+
   async login ({ email, password }) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);
+
+    if (!user.emailVerified) {
+      await this.logout();
+      throw new Error(`the user does not verified the email ${email}`);
+    }
 
     return user;
   }

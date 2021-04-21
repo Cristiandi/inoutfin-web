@@ -4,17 +4,17 @@
       <div
         class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2"
       >
-        <router-link to="/login" class="link-dark">
+        <router-link to="/profile" class="link-dark">
           <BIconArrowLeft width="32" height="32" />
         </router-link>
 
-        <h1 class="text-center">Reiniciar clave</h1>
+        <h1 class="text-center">Cambiar email</h1>
 
         <div class="">
           <Form
             @submit="onSubmit"
             v-slot="{ errors }"
-            :validation-schema="resetUserPassword"
+            :validation-schema="changeUserEmail"
           >
             <div>
               <div class="row">
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-6 text-end">
                   <small for="email" class="text-muted fw-light">
-                    Uno válido porfa!
+                    Tú nuevo email!
                   </small>
                 </div>
               </div>
@@ -51,7 +51,7 @@
             <div v-if="!loading">
               <pre></pre>
               <button type="submit" class="btn btn-dark form-control">
-                ENVIAR CORREO
+                CAMBIAR
               </button>
             </div>
           </Form>
@@ -87,13 +87,14 @@ a:hover {
 <script>
 import { Field, Form } from 'vee-validate';
 import { BIconArrowLeft } from 'bootstrap-icons-vue';
+import { mapState } from 'vuex';
 
-import { resetUserPassword } from '../modules/users/schemas/reset-user-password.schema';
+import { changeUserEmail } from '../modules/users/schemas/change-user-email.schema';
 import { usersService } from '../modules/users/users.service';
 import { getErrorMessage } from '../utils';
 
 export default {
-  name: 'ResetPasswrod',
+  name: 'ChangeEmail',
   data () {
     return {
       data: {
@@ -107,30 +108,46 @@ export default {
     Field,
     BIconArrowLeft
   },
+  computed: mapState({
+    userFromState: (state) => state.user
+  }),
   setup () {
-    return { resetUserPassword };
+    return { changeUserEmail };
   },
   methods: {
     async onSubmit (args) {
-      this.loading = true;
-
       try {
+        this.loading = true;
+
         const { email } = this.data;
 
-        const { message } = await usersService.resetPassword({ email });
+        if (email.trim() === this.userFromState?.email) {
+          this.$toast.info('No es necesario cambiar, es igual al actual.', {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
+
+        const { message } = await usersService.changeEmail({ email, authUid: this.userFromState?.uid });
 
         this.$toast.success(message, {
           position: 'top-right',
           queue: false
         });
+
+        setTimeout(() => {
+          this.$store.dispatch('logout');
+        }, 3000);
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',
           queue: false
         });
+      } finally {
+        this.loading = false;
       }
-
-      this.loading = false;
     }
   }
 };
