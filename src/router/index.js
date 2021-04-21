@@ -10,6 +10,7 @@ import ResetPassword from '../views/ResetPassword.vue';
 import Home from '../views/Home.vue';
 import Profile from '../views/Profile.vue';
 import ChangeEmail from '../views/ChangeEmail.vue';
+import ChangePassword from '../views/ChangePassword.vue';
 
 const routes = [
   {
@@ -52,6 +53,14 @@ const routes = [
     path: '/change-email',
     name: 'ChangeEmail',
     component: ChangeEmail,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword,
     meta: {
       requiresAuth: true
     }

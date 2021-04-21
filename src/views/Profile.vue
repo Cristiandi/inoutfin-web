@@ -72,7 +72,7 @@
             <pre></pre>
 
             <router-link
-              to="/"
+              to="/change-password"
               role="button"
               class="btn btn-outline-dark form-control"
               >CAMBIAR CLAVE</router-link

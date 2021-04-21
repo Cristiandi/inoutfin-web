@@ -125,6 +125,47 @@ class UsersService {
     };
   }
 
+  async changePassword ({ authUid, oldPassword, newPassword }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation change (
+        $authUid: String!
+        $oldPassword: String!
+        $newPassword: String!
+      ) {
+        changeUserPassword (
+          changeUserPasswordInput: {
+            authUid: $authUid,
+            oldPassword: $oldPassword
+            newPassword: $newPassword
+          }
+        ) {
+          id
+          authUid
+          fullName
+          email
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      authUid,
+      oldPassword,
+      newPassword
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data,
+      message: 'Tú clave ha sido cambiada.'
+    };
+  }
+
   async login ({ email, password }) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);
 
