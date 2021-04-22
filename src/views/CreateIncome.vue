@@ -8,13 +8,13 @@
           <BIconArrowLeft width="32" height="32" />
         </router-link>
 
-        <h1 class="text-center">Crear egreso</h1>
+        <h1 class="text-center">Crear Ingreso</h1>
 
         <div class="">
           <Form
             @submit="onSubmit"
             v-slot="{ errors }"
-            :validation-schema="createOutcomeMovementSchema"
+            :validation-schema="createIncomeMovementSchema"
           >
             <div>
               <div class="row">
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-6 text-end">
                   <small for="description" class="text-muted fw-light">
-                    Algo que describa el gasto
+                    Algo que describa el ingreso.
                   </small>
                 </div>
               </div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-6 text-end">
                   <small for="amount" class="text-muted fw-light">
-                    El valor del gasto.
+                    El valor del ingreso.
                   </small>
                 </div>
               </div>
@@ -140,7 +140,7 @@ import { Field, Form } from 'vee-validate';
 import { BIconArrowLeft } from 'bootstrap-icons-vue';
 import { mapState } from 'vuex';
 
-import { createOutcomeMovementSchema } from '../modules/movements/schemas/create-outcome-movement.schema';
+import { createIncomeMovementSchema } from '../modules/movements/schemas/create-income-movement.schema';
 
 import { movementCategoriesService } from '../modules/movement-categories/movement-categories.service';
 import { movementsService } from '../modules/movements/movements.service';
@@ -170,11 +170,11 @@ export default {
     userFromState: (state) => state.user
   }),
   setup () {
-    return { createOutcomeMovementSchema };
+    return { createIncomeMovementSchema };
   },
   async mounted () {
     try {
-      this.movementCategories = await movementCategoriesService.getAll({ sign: -1 });
+      this.movementCategories = await movementCategoriesService.getAll({ sign: 1 });
     } catch (error) {
       this.$toast.error('problem loading the categories.', {
         position: 'top-right',
@@ -197,7 +197,7 @@ export default {
           return;
         }
 
-        const { message } = await movementsService.createOutcome({
+        const { message } = await movementsService.createIncome({
           userAuthUid: this.userFromState?.uid,
           movementCategoryId: this.data.movementCategoryId,
           amount: parseFloat(this.data.amount),

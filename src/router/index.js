@@ -13,6 +13,7 @@ import ChangeEmail from '../views/ChangeEmail.vue';
 import ChangePassword from '../views/ChangePassword.vue';
 import ChangePhone from '../views/ChangePhone.vue';
 import CreateOutcome from '../views/CreateOutcome.vue';
+import CreateIncome from '../views/CreateIncome.vue';
 
 const routes = [
   {
@@ -79,6 +80,14 @@ const routes = [
     path: '/create-outcome',
     name: 'CreateOutcome',
     component: CreateOutcome,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/create-income',
+    name: 'CreateIncome',
+    component: CreateIncome,
     meta: {
       requiresAuth: true
     }

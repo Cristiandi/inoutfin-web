@@ -10,7 +10,7 @@
       <router-link to="/home" class="link-dark">
         <BIconHouseDoor width="32" height="32" />
       </router-link>
-      <router-link to="/" class="link-dark">
+      <router-link to="/create-income" class="link-dark">
         <BIconPlusCircle width="25" height="25" />
       </router-link>
       <router-link to="/" class="link-dark">
