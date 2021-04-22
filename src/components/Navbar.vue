@@ -4,7 +4,7 @@
       <router-link to="/profile" class="link-dark">
         <BIconPerson width="25" height="25" />
       </router-link>
-      <router-link to="/" class="link-dark">
+      <router-link to="/create-outcome" class="link-dark">
         <BIconDashCircle width="25" height="25" />
       </router-link>
       <router-link to="/home" class="link-dark">

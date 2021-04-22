@@ -209,7 +209,7 @@ export default {
     return { registerUser };
   },
   methods: {
-    async onSubmit (args) {
+    async onSubmit (values, { resetForm }) {
       this.loading = true;
 
       try {
@@ -225,6 +225,8 @@ export default {
           position: 'top-right',
           queue: false
         });
+
+        resetForm();
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',

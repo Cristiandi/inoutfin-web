@@ -44,7 +44,7 @@ class UsersService {
     const data = await graphQLClient.request(mutation, variables);
 
     return {
-      ...data,
+      ...data.createUser,
       message: 'Tu usuario fue creado, puedes iniciar sesión.'
     };
   }
@@ -82,7 +82,7 @@ class UsersService {
     const data = await graphQLClient.request(mutation, variables);
 
     return {
-      ...data,
+      ...data.updateUser,
       message: 'Tus datos han sido actualizados.'
     };
   }
@@ -120,7 +120,7 @@ class UsersService {
     const data = await graphQLClient.request(mutation, variables);
 
     return {
-      ...data,
+      ...data.changeUserEmail,
       message: 'El email ha sido actualizado, tú sesión se cerrará.'
     };
   }
@@ -161,7 +161,7 @@ class UsersService {
     const data = await graphQLClient.request(mutation, variables);
 
     return {
-      ...data,
+      ...data.changeUserPassword,
       message: 'Tú clave ha sido cambiada.'
     };
   }
@@ -199,7 +199,7 @@ class UsersService {
     const data = await graphQLClient.request(mutation, variables);
 
     return {
-      ...data,
+      ...data.changeUserPhone,
       message: 'Tú télefono ha sido actualizado.'
     };
   }

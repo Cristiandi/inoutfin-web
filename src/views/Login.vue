@@ -149,11 +149,13 @@ export default {
     return { loginUser };
   },
   methods: {
-    async onSubmit (args) {
+    async onSubmit (values, { resetForm }) {
       try {
         this.loading = true;
 
         const { email, password } = this.data;
+
+        resetForm();
 
         await this.$store.dispatch('login', {
           email,

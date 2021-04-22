@@ -141,7 +141,7 @@ export default {
     return { changeUserPassword };
   },
   methods: {
-    async onSubmit (args) {
+    async onSubmit (values, { resetForm }) {
       try {
         this.loading = true;
 
@@ -158,8 +158,7 @@ export default {
           queue: false
         });
 
-        this.data.oldPassword = '';
-        this.data.newPassword = '';
+        resetForm();
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',

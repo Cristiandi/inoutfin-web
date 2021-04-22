@@ -115,7 +115,7 @@ export default {
     return { changeUserPhoneSchema };
   },
   methods: {
-    async onSubmit (args) {
+    async onSubmit (values, { resetForm }) {
       try {
         this.loading = true;
 
@@ -141,6 +141,8 @@ export default {
         });
 
         this.userFromState.phone = phone;
+
+        resetForm();
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',

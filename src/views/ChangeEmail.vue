@@ -115,7 +115,7 @@ export default {
     return { changeUserEmail };
   },
   methods: {
-    async onSubmit (args) {
+    async onSubmit (values, { resetForm }) {
       try {
         this.loading = true;
 
@@ -136,6 +136,8 @@ export default {
           position: 'top-right',
           queue: false
         });
+
+        resetForm();
 
         setTimeout(() => {
           this.$store.dispatch('logout');
