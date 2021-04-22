@@ -81,7 +81,7 @@
             <pre></pre>
 
             <router-link
-              to="/"
+              to="/change-phone"
               role="button"
               class="btn btn-outline-dark form-control"
               >CAMBIAR TÉLEFONO</router-link

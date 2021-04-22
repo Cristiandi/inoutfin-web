@@ -6,5 +6,6 @@ export const registerUser = Yup.object().shape({
   password: Yup.string().min(6).required(),
   confirmPassword: Yup.string()
     .required()
-    .oneOf([Yup.ref('password')], 'Passwords do not match')
+    .oneOf([Yup.ref('password')], 'Passwords do not match'),
+  phone: Yup.string().length(10).required()
 });

@@ -166,6 +166,44 @@ class UsersService {
     };
   }
 
+  async changePhone ({ authUid, phone }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation change (
+        $authUid: String!
+        $phone: String!
+      ) {
+        changeUserPhone (
+          changeUserPhoneInput: {
+            authUid: $authUid,
+            phone: $phone
+          }
+        ) {
+          id
+          authUid
+          fullName
+          email
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      authUid,
+      phone
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data,
+      message: 'Tú télefono ha sido actualizado.'
+    };
+  }
+
   async login ({ email, password }) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);
 

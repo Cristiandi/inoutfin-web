@@ -11,6 +11,7 @@ import Home from '../views/Home.vue';
 import Profile from '../views/Profile.vue';
 import ChangeEmail from '../views/ChangeEmail.vue';
 import ChangePassword from '../views/ChangePassword.vue';
+import ChangePhone from '../views/ChangePhone.vue';
 
 const routes = [
   {
@@ -61,6 +62,14 @@ const routes = [
     path: '/change-password',
     name: 'ChangePassword',
     component: ChangePassword,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/change-phone',
+    name: 'ChangePhone',
+    component: ChangePhone,
     meta: {
       requiresAuth: true
     }
