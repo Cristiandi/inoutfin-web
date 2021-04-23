@@ -2,6 +2,8 @@ import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
 
+import { currencyFormat, dateFormat } from '../../utils';
+
 class MovementsService {
   async createOutcome ({ userAuthUid, movementCategoryId, amount, description }) {
     const graphQLClient = await getClient();
@@ -84,6 +86,91 @@ class MovementsService {
     return {
       ...data.createIncomeMovement,
       message: 'Ingreso creado.'
+    };
+  }
+
+  async getBalanceResume ({ userAuthUid }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getResume (
+        $userAuthUid: String!
+      ) {
+        getBalanceResume (
+          getBalanceResumeInput: {
+            userAuthUid: $userAuthUid
+          }
+        ) {
+          amount
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    return {
+      ...data.getBalanceResume
+    };
+  }
+
+  async getAll ({ userAuthUid, limit, skip }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getAll (
+        $userAuthUid: String!
+        $limit: Int
+        $skip: Int
+      ) {
+        getAllMovements (
+          getAllMovementsInput: {
+            userAuthUid: $userAuthUid
+            limit: $limit
+            skip: $skip
+          }
+        ) {
+            id
+            description
+            amount
+            createdAt
+            updatedAt
+            movementType {
+                id
+                code
+                name
+                sign
+            }
+            movementCategory {
+                id
+                code
+                name
+                description
+                sign
+            }
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      limit,
+      skip
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    return {
+      ...data.getAllMovements.map((movement) => {
+        return {
+          ...movement,
+          amount: currencyFormat(movement.amount),
+          createdAt: dateFormat(new Date(movement.createdAt))
+        };
+      })
     };
   }
 }

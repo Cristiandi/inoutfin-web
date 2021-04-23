@@ -1,5 +1,5 @@
 <template>
-  <Navbar v-if="currentUser?.uid" />
+  <Navbar v-if="currentUser.uid" />
   <router-view/>
 </template>
 
@@ -12,23 +12,18 @@
 </style>
 
 <script>
-import { mapState } from 'vuex';
-
 import Navbar from './components/Navbar.vue';
 
 export default {
   name: 'App',
   data () {
     return {
-      currentUser: null
+      currentUser: {}
     };
   },
   components: {
     Navbar
   },
-  computed: mapState({
-    user: state => state.user
-  }),
   created () {
     this.unsubscribe = this.$store.subscribe((mutation, state) => {
       const { type, payload } = mutation;
@@ -39,7 +34,7 @@ export default {
       if (type === 'setUser' && payload && payload.uid) {
         this.currentUser = payload;
       } else if (type === 'setUser') {
-        this.currentUser = null;
+        this.currentUser = {};
       }
     });
   },

@@ -1,9 +1,11 @@
 import Toaster from '@meforma/vue-toaster';
+import VTooltipPlugin from 'v-tooltip';
 
 import { createApp } from 'vue';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
+import 'v-tooltip/dist/v-tooltip.css';
 
 import { auth } from './firebase';
 
@@ -21,13 +23,13 @@ auth.onAuthStateChanged(user => {
       .use(store)
       .use(router)
       .use(Toaster)
+      .use(VTooltipPlugin)
       .mount('#app');
   }
 
   if (user && user.emailVerified) {
-    router.push('/home');
-
     store.dispatch('setCurrentUser', user)
+      .then(() => router.push('/home'))
       .catch(err => {
         console.error('error making setCurrentUser', err);
         store.dispatch('logout');
