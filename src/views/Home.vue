@@ -41,6 +41,12 @@
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
+
+        <div v-if="movements[4]" class="text-end">
+          <router-link to="/see-movements">
+            Ver todos...
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -63,6 +69,14 @@
 
 .balance-card hr {
   color: white;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 </style>
 
@@ -108,7 +122,6 @@ export default {
     }
   },
   created () {
-    console.log('uid in create', this.userFromState.uid);
     if (!this.userFromState.uid) {
       return;
     }

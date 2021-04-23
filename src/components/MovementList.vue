@@ -3,12 +3,12 @@
     <div class="row" v-for="movement in movements" :key="movement.id">
       <div class="col-3">
         <div v-if="movement.movementType.sign < 0">
-          <router-link to="/">
+          <router-link :to="'/detalled-movement/' + movement.id">
             <span class="badge rounded-pill bg-danger">M</span>
           </router-link>
         </div>
         <div v-else-if="movement.movementType.sign > 0">
-          <router-link to="/">
+          <router-link :to="'/detalled-movement/' + movement.id">
             <span class="badge rounded-pill bg-success">M</span>
           </router-link>
         </div>

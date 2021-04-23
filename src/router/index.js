@@ -14,6 +14,8 @@ import ChangePassword from '../views/ChangePassword.vue';
 import ChangePhone from '../views/ChangePhone.vue';
 import CreateOutcome from '../views/CreateOutcome.vue';
 import CreateIncome from '../views/CreateIncome.vue';
+import SeeMovements from '../views/SeeMovements.vue';
+import DetalledMovement from '../views/DetalledMovement.vue';
 
 const routes = [
   {
@@ -88,6 +90,22 @@ const routes = [
     path: '/create-income',
     name: 'CreateIncome',
     component: CreateIncome,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/see-movements',
+    name: 'SeeMovements',
+    component: SeeMovements,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/detalled-movement/:id',
+    name: 'DetalledMovement',
+    component: DetalledMovement,
     meta: {
       requiresAuth: true
     }
