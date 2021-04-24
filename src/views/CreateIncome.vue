@@ -69,7 +69,9 @@
             <div>
               <div class="row">
                 <div class="col-6">
-                  <label for="movementCategoryId" class="fw-bold">Categoria</label>
+                  <label for="movementCategoryId" class="fw-bold"
+                    >Categoria</label
+                  >
                 </div>
                 <div class="col-6 text-end">
                   <small for="movementCategoryId" class="text-muted fw-light">
@@ -78,17 +80,45 @@
                 </div>
               </div>
               <div class="">
-                <vue-select v-model="data.movementCategoryId"
-                            :options="movementCategories"
-                            label-by="name"
-                            value-by="id"
-                            close-on-select
-                            id="movementCategoryId"
-                            name="movementCategoryId"
-                            class="form-control"
-                            :tabindex=3></vue-select>
+                <vue-select
+                  v-model="data.movementCategoryId"
+                  :options="movementCategories"
+                  label-by="name"
+                  value-by="id"
+                  close-on-select
+                  id="movementCategoryId"
+                  name="movementCategoryId"
+                  class="form-control"
+                  :tabindex="3"
+                ></vue-select>
 
-                <small class="validation">{{ errors.movementCategoryId }}</small>
+                <small class="validation">{{
+                  errors.movementCategoryId
+                }}</small>
+              </div>
+            </div>
+
+            <div>
+              <div class="mb-3">
+                <div class="row">
+                  <div class="col-6">
+                    <label for="image" class="fw-bold">Comprobante</label>
+                  </div>
+                  <div class="col-6 text-end">
+                    <small for="image" class="text-muted fw-light">
+                      Una imagen.
+                    </small>
+                  </div>
+                </div>
+                <Field
+                  type="file"
+                  class="form-control form-control-sm"
+                  id="image"
+                  name="image"
+                  v-model="data.image"
+                  rules="image"
+                />
+                <small class="validation">{{ errors.image }}</small>
               </div>
             </div>
 
@@ -102,7 +132,11 @@
 
             <div v-if="!loading">
               <pre></pre>
-              <button type="submit" class="btn btn-dark form-control" tabindex="4">
+              <button
+                type="submit"
+                class="btn btn-dark form-control"
+                tabindex="4"
+              >
                 CREAR
               </button>
             </div>
@@ -154,7 +188,8 @@ export default {
       data: {
         description: '',
         amount: null,
-        movementCategoryId: null
+        movementCategoryId: null,
+        image: null
       },
       loading: false,
       movementCategories: []
@@ -174,7 +209,9 @@ export default {
   },
   async mounted () {
     try {
-      this.movementCategories = await movementCategoriesService.getAll({ sign: 1 });
+      this.movementCategories = await movementCategoriesService.getAll({
+        sign: 1
+      });
     } catch (error) {
       this.$toast.error('problem loading the categories.', {
         position: 'top-right',
@@ -197,12 +234,27 @@ export default {
           return;
         }
 
-        const { message } = await movementsService.createIncome({
-          userAuthUid: this.userFromState?.uid,
-          movementCategoryId: this.data.movementCategoryId,
-          amount: parseFloat(this.data.amount),
-          description: this.data.description
-        });
+        const { message, id: movementId } = await movementsService.createIncome(
+          {
+            userAuthUid: this.userFromState?.uid,
+            movementCategoryId: this.data.movementCategoryId,
+            amount: parseFloat(this.data.amount),
+            description: this.data.description
+          }
+        );
+
+        const { image } = this.data;
+        if (image) {
+          const file = image[0];
+
+          movementsService
+            .uploadFile({
+              userAuthUid: this.userFromState?.uid,
+              id: movementId,
+              file
+            })
+            .catch((err) => console.error(err));
+        }
 
         this.$toast.success(message, {
           position: 'top-right',
@@ -211,6 +263,7 @@ export default {
 
         resetForm();
         this.data.movementCategoryId = null;
+        this.data.image = null;
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',
@@ -218,6 +271,15 @@ export default {
         });
       } finally {
         this.loading = false;
+      }
+    },
+    onChange (image) {
+      console.log('New picture selected!');
+      if (image) {
+        console.log('Picture loaded.');
+        this.image = image;
+      } else {
+        console.log('FileReader API not supported: use the <form>, Luke!');
       }
     }
   }

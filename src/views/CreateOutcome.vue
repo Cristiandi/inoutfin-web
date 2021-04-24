@@ -92,6 +92,30 @@
               </div>
             </div>
 
+            <div>
+              <div class="mb-3">
+                <div class="row">
+                  <div class="col-6">
+                    <label for="image" class="fw-bold">Comprobante</label>
+                  </div>
+                  <div class="col-6 text-end">
+                    <small for="image" class="text-muted fw-light">
+                      Una imagen.
+                    </small>
+                  </div>
+                </div>
+                <Field
+                  type="file"
+                  class="form-control form-control-sm"
+                  id="image"
+                  name="image"
+                  v-model="data.image"
+                  rules="image"
+                />
+                <small class="validation">{{ errors.image }}</small>
+              </div>
+            </div>
+
             <div v-if="loading" class="text-center">
               <pre></pre>
 
@@ -154,7 +178,8 @@ export default {
       data: {
         description: '',
         amount: null,
-        movementCategoryId: null
+        movementCategoryId: null,
+        image: null
       },
       loading: false,
       movementCategories: []
@@ -197,12 +222,25 @@ export default {
           return;
         }
 
-        const { message } = await movementsService.createOutcome({
+        const { message, id: movementId } = await movementsService.createOutcome({
           userAuthUid: this.userFromState?.uid,
           movementCategoryId: this.data.movementCategoryId,
           amount: parseFloat(this.data.amount),
           description: this.data.description
         });
+
+        const { image } = this.data;
+        if (image) {
+          const file = image[0];
+
+          movementsService
+            .uploadFile({
+              userAuthUid: this.userFromState?.uid,
+              id: movementId,
+              file
+            })
+            .catch((err) => console.error(err));
+        }
 
         this.$toast.success(message, {
           position: 'top-right',
@@ -211,6 +249,7 @@ export default {
 
         resetForm();
         this.data.movementCategoryId = null;
+        this.data.image = null;
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',

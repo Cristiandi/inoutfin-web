@@ -361,6 +361,40 @@ class MovementsService {
       message: 'Eliminado.'
     };
   }
+
+  async uploadFile ({ userAuthUid, id, file }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation uploadFile (
+        $userAuthUid: String!
+        $id: Int!
+        $file: Upload!
+      ) {
+        uploadMovementImage (
+          getOneMovementInput: {
+            userAuthUid: $userAuthUid
+            id: $id
+          }
+          file: $file
+        ) {
+          id
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      id,
+      file
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data.uploadMovementImage
+    };
+  }
 }
 
 export const movementsService = new MovementsService();
