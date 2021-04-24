@@ -324,6 +324,43 @@ class MovementsService {
       message: 'Egreso actualizado.'
     };
   }
+
+  async remove ({ userAuthUid, id }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation remove (
+        $userAuthUid: String!
+        $id: Int!
+      ) {
+        removeMovement (
+          getOneMovementInput: {
+            userAuthUid: $userAuthUid
+            id: $id
+          }
+        ) {
+          id
+          description
+          amount
+          closed
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      id
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data.removeMovement,
+      message: 'Eliminado.'
+    };
+  }
 }
 
 export const movementsService = new MovementsService();

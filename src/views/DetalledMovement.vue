@@ -276,7 +276,12 @@ export default {
         const { wanToDelete } = this.data;
 
         if (wanToDelete) {
-          this.$toast.error('Pending...', {
+          const { message } = await movementsService.remove({
+            userAuthUid: this.userFromState?.uid,
+            id: parseInt(this.$route.params.id, 10)
+          });
+
+          this.$toast.success(message, {
             position: 'top-right',
             queue: false
           });
