@@ -17,7 +17,7 @@
         <p><small><strong>{{movement.description}}</strong></small></p>
       </div>
       <div class="col-4 text-end" v-tooltip="'creado el ' + movement.createdAt">
-        <p><small>{{movement.movementType.sign > 0 ? '+' : ''}}{{movement.amount}}</small></p>
+        <p><small>{{movement.movementType.sign > 0 ? '+' : '-'}}{{movement.amount}}</small></p>
       </div>
       <hr>
     </div>

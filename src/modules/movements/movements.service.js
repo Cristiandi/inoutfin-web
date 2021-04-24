@@ -173,6 +173,157 @@ class MovementsService {
       })
     };
   }
+
+  async getOne ({ userAuthUid, id }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getOne (
+        $userAuthUid: String!
+        $id: Int!
+      ) {
+        getOneMovement (
+          getOneMovementInput: {
+            userAuthUid: $userAuthUid
+            id: $id
+          }
+        ) {
+          id
+          description
+          amount
+          closed
+          createdAt
+          updatedAt
+          movementType {
+              id
+              code
+              name
+              sign
+          }
+          movementCategory {
+              id
+              code
+              name
+              description
+              sign
+          }
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      id
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    return {
+      ...data.getOneMovement
+    };
+  }
+
+  async updateIncome ({ userAuthUid, id, description, amount, closed, movementCategoryId }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation updateIncome (
+        $userAuthUid: String!
+        $id: Int!
+        $description: String
+        $amount: Float
+        $closed: Boolean
+        $movementCategoryId: Int
+      ) {
+        updateIncomeMovement (
+          getOneMovementInput: {
+            userAuthUid: $userAuthUid
+            id: $id
+          }
+          updateIncomeMovementInput: {
+            description: $description
+            amount: $amount
+            closed: $closed
+            movementCategoryId: $movementCategoryId
+          }
+        ) {
+          id
+          description
+          amount
+          closed
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      id,
+      description,
+      amount,
+      closed,
+      movementCategoryId
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data.updateIncomeMovement,
+      message: 'Ingreso actualizado.'
+    };
+  }
+
+  async updateOutcome ({ userAuthUid, id, description, amount, closed, movementCategoryId }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation updateOutcome (
+        $userAuthUid: String!
+        $id: Int!
+        $description: String
+        $amount: Float
+        $closed: Boolean
+        $movementCategoryId: Int
+      ) {
+        updateOutcomeMovement (
+          getOneMovementInput: {
+            userAuthUid: $userAuthUid
+            id: $id
+          }
+          updateOutcomeMovementInput: {
+            description: $description
+            amount: $amount
+            closed: $closed
+            movementCategoryId: $movementCategoryId
+          }
+        ) {
+          id
+          description
+          amount
+          closed
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      id,
+      description,
+      amount,
+      closed,
+      movementCategoryId
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    return {
+      ...data.updateOutcomeMovement,
+      message: 'Egreso actualizado.'
+    };
+  }
 }
 
 export const movementsService = new MovementsService();

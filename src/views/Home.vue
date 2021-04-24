@@ -108,7 +108,7 @@ export default {
   }),
   watch: {
     userFromState: function () {
-      if (!this.userFromState.uid) {
+      if (!this.userFromState?.uid) {
         return;
       }
 
@@ -122,7 +122,7 @@ export default {
     }
   },
   created () {
-    if (!this.userFromState.uid) {
+    if (!this.userFromState?.uid) {
       return;
     }
 

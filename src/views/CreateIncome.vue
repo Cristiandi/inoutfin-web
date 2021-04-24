@@ -148,7 +148,7 @@ import { movementsService } from '../modules/movements/movements.service';
 import { getErrorMessage } from '../utils';
 
 export default {
-  name: 'ChangePhone',
+  name: 'CreateIncome',
   data () {
     return {
       data: {

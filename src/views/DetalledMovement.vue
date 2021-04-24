@@ -4,8 +4,337 @@
       <div
         class="col-lg-4 offset-lg-4 col-md-6 offset-md-3 col-sm-8 offset-sm-2"
       >
-        <h1>Detalled movement {{$route.params.id}}</h1>
+        <h1 class="text-center">Movimiento {{ $route.params.id }}</h1>
+
+        <div v-if="!loadingFormData">
+          <Form
+            @submit="onSubmit"
+            v-slot="{ errors }"
+            :validation-schema="updateMovementSchema"
+          >
+            <div>
+              <div class="row">
+                <div class="col-6">
+                  <label for="description" class="fw-bold">Nombre</label>
+                </div>
+                <div class="col-6 text-end">
+                  <small for="description" class="text-muted fw-light">
+                    Algo que describa el ingreso.
+                  </small>
+                </div>
+              </div>
+              <div class="">
+                <Field
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  name="description"
+                  as="input"
+                  tabindex="1"
+                  v-model="data.description"
+                />
+                <small class="validation">{{ errors.description }}</small>
+              </div>
+            </div>
+
+            <div>
+              <div class="row">
+                <div class="col-6">
+                  <label for="amount" class="fw-bold">Monto</label>
+                </div>
+                <div class="col-6 text-end">
+                  <small for="amount" class="text-muted fw-light">
+                    El valor del ingreso.
+                  </small>
+                </div>
+              </div>
+              <div class="">
+                <Field
+                  type="number"
+                  class="form-control"
+                  id="amount"
+                  name="amount"
+                  as="input"
+                  tabindex="2"
+                  v-model="data.amount"
+                />
+                <small class="validation">{{ errors.amount }}</small>
+              </div>
+            </div>
+
+            <div>
+              <div class="row">
+                <div class="col-6">
+                  <label for="movementCategoryId" class="fw-bold"
+                    >Categoria</label
+                  >
+                </div>
+                <div class="col-6 text-end">
+                  <small for="movementCategoryId" class="text-muted fw-light">
+                    A que categoria pertenece
+                  </small>
+                </div>
+              </div>
+              <div class="">
+                <vue-select
+                  v-model="data.movementCategoryId"
+                  :options="movementCategories"
+                  label-by="name"
+                  value-by="id"
+                  close-on-select
+                  id="movementCategoryId"
+                  name="movementCategoryId"
+                  class="form-control"
+                  :tabindex="3"
+                ></vue-select>
+
+                <small class="validation">{{
+                  errors.movementCategoryId
+                }}</small>
+              </div>
+            </div>
+
+            <div class="form-check">
+              <pre></pre>
+              <Field
+                type="checkbox"
+                class="form-check-input"
+                id="wanToDelete"
+                name="wanToDelete"
+                :value="true"
+                v-model="data.wanToDelete"
+                />
+              <label class="form-check-label" for="wanToDelete">
+                ¿Eliminar movimiento?
+              </label>
+            </div>
+
+            <div class="form-check">
+              <pre></pre>
+              <Field
+                type="checkbox"
+                class="form-check-input"
+                id="closed"
+                name="closed"
+                :value="true"
+                v-model="data.closed"
+                />
+              <label class="form-check-label" for="closed">
+                ¿Movimiento cerrado?
+              </label>
+            </div>
+
+            <div v-if="loading" class="text-center">
+              <pre></pre>
+
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <div v-if="!loading">
+              <pre></pre>
+              <button
+                type="submit"
+                class="btn btn-dark form-control"
+                tabindex="4"
+              >
+                ENVIAR
+              </button>
+            </div>
+          </Form>
+        </div>
+        <div v-else class="text-center">
+          <pre></pre>
+
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.validation {
+  color: red;
+}
+
+input {
+  border-radius: 0;
+  border: 1px solid #000;
+}
+
+small {
+  font-size: 8pt;
+}
+
+.vue-select {
+  width: 100%;
+  border-radius: 0;
+  border: 1px solid #000;
+}
+</style>
+
+<script>
+import VueSelect from 'vue-next-select';
+import { mapState } from 'vuex';
+import { Field, Form } from 'vee-validate';
+
+import { movementsService } from '../modules/movements/movements.service';
+import { movementCategoriesService } from '../modules/movement-categories/movement-categories.service';
+
+import { getErrorMessage } from '../utils';
+
+import { updateMovementSchema } from '../modules/movements/schemas/update-movement.schema';
+
+export default {
+  name: 'DetalledMovement',
+  data () {
+    return {
+      data: {
+        description: '',
+        amount: null,
+        movementCategoryId: null,
+        wanToDelete: undefined,
+        closed: undefined
+      },
+      loading: false,
+      loadingFormData: true,
+      movementCategories: [],
+      movementSign: undefined
+    };
+  },
+  computed: mapState({
+    userFromState: (state) => state.user
+  }),
+  components: {
+    Field,
+    Form,
+    VueSelect
+  },
+  setup () {
+    return { updateMovementSchema };
+  },
+  created () {
+    if (isNaN(parseInt(this.$route.params.id, 10))) {
+      this.$toast.error('id param is not valid.', {
+        position: 'top-right',
+        queue: false
+      });
+
+      return;
+    }
+
+    if (!this.userFromState?.uid) {
+      return;
+    }
+
+    // loading the form data
+    this.loadFormData({
+      userAuthUid: this.userFromState.uid,
+      id: parseInt(this.$route.params.id, 10)
+    });
+  },
+  methods: {
+    async loadFormData ({ userAuthUid, id }) {
+      try {
+        this.loadingFormData = true;
+
+        const result = await movementsService.getOne({
+          userAuthUid,
+          id
+        });
+
+        const { description, amount, closed } = result;
+
+        this.movementCategories = await movementCategoriesService.getAll({
+          sign: result?.movementType?.sign
+        });
+
+        this.data.description = description;
+        this.data.amount = amount;
+        this.data.closed = closed;
+        this.data.movementCategoryId = result?.movementCategory?.id;
+
+        this.movementSign = result?.movementCategory?.sign;
+      } catch (error) {
+        this.$toast.error('problem loading the movements.', {
+          position: 'top-right',
+          queue: false
+        });
+        console.error(error);
+      } finally {
+        this.loadingFormData = false;
+      }
+    },
+    async onSubmit (values, { resetForm }) {
+      try {
+        this.loading = true;
+
+        const { wanToDelete } = this.data;
+
+        if (wanToDelete) {
+          this.$toast.error('Pending...', {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
+
+        if (!this.movementSign) {
+          this.$toast.error('can not determinate the movement sign.', {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
+
+        if (this.movementSign === 1) {
+          const { message } = await movementsService.updateIncome({
+            userAuthUid: this.userFromState?.uid,
+            id: parseInt(this.$route.params.id, 10),
+            description: this.data.description,
+            amount: parseFloat(this.data.amount),
+            closed: this.data.closed,
+            movementCategoryId: this.data.movementCategoryId
+          });
+
+          this.$toast.success(message, {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        } else if (this.movementSign === -1) {
+          const { message } = await movementsService.updateOutcome({
+            userAuthUid: this.userFromState?.uid,
+            id: parseInt(this.$route.params.id, 10),
+            description: this.data.description,
+            amount: parseFloat(this.data.amount),
+            closed: this.data.closed,
+            movementCategoryId: this.data.movementCategoryId
+          });
+
+          this.$toast.success(message, {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
+      } catch (error) {
+        this.$toast.error(getErrorMessage(error) || error.message, {
+          position: 'top-right',
+          queue: false
+        });
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+};
+</script>
