@@ -20,12 +20,25 @@ export default createStore({
   actions: {
     async login ({ dispatch }, { email, password }) {
       // sign user in
-      const user = await usersService.login({ email, password });
+      // const user = await usersService.login({ email, password });
 
-      await dispatch('setCurrentUser', user);
+      await usersService.login({ email, password });
+
+      // await dispatch('setCurrentUser', user);
 
       // change route to home
-      router.push('/home');
+      // router.push('/home');
+    },
+    async loginWithGoogle ({ dispatch }) {
+      // sign user in
+      // const user = await usersService.loginWithGoogle();
+
+      await usersService.loginWithGoogle();
+
+      // await dispatch('setCurrentUser', user);
+
+      // change route to home
+      // router.push('/home');
     },
     async logout ({ commit }) {
       await usersService.logout();

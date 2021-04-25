@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
-import { auth } from '../../firebase';
-// import { sleep } from '../../utils';
+import { auth, googleAuthProvider } from '../../firebase';
+import { sleep } from '../../utils';
 
 class UsersService {
   async register ({ fullName, email, phoneNumber, password }) {
@@ -46,6 +46,51 @@ class UsersService {
     return {
       ...data.createUser,
       message: 'Tu usuario fue creado, puedes iniciar sesión.'
+    };
+  }
+
+  async registerFromAuthUid ({ authUid, email, fullName, phone }) {
+    const graphQLClient = await getClient();
+
+    const mutation = gql`
+      mutation register (
+        $authUid: String!
+        $email: String!
+        $fullName: String!
+        $phone: String
+      ) {
+        createUserFromAuthUid (
+          createUserFromAuthUidInput: {
+            authUid: $authUid
+            email: $email
+            fullName: $fullName
+            phone: $phone
+          }
+        ) {
+          id
+          authUid
+          fullName
+          email
+          phone
+          createdAt
+          updatedAt
+        }
+      }
+    `;
+
+    const variables = {
+      authUid,
+      email,
+      fullName,
+      phone
+    };
+
+    const data = await graphQLClient.request(mutation, variables);
+
+    // console.log('USER FROM AUTHUID REGISTRED!');
+
+    return {
+      ...data.createUserFromAuthUid
     };
   }
 
@@ -215,6 +260,35 @@ class UsersService {
     return user;
   }
 
+  async loginWithGoogle () {
+    googleAuthProvider.setCustomParameters({
+      prompt: 'select_account'
+    });
+
+    googleAuthProvider.addScope('profile');
+    googleAuthProvider.addScope('email');
+
+    const result = await auth.signInWithPopup(googleAuthProvider);
+
+    const isNew = result?.additionalUserInfo?.isNewUser;
+
+    if (isNew) {
+      const authUid = result.user.uid;
+      const email = result.user.email;
+      const fullName = result?.additionalUserInfo?.profile?.name || result?.user?.displayName;
+      const phone = result.user?.phoneNumber || null;
+
+      await this.registerFromAuthUid({
+        authUid,
+        email,
+        fullName,
+        phone
+      });
+    }
+
+    return result.user;
+  }
+
   async logout () {
     if (auth.currentUser) await auth.signOut();
   }
@@ -244,7 +318,27 @@ class UsersService {
       authUid
     };
 
-    const data = await graphQLClient.request(query, variables);
+    const LIMIT = 10;
+    let tries = 0;
+
+    let data;
+
+    do {
+      try {
+        data = await graphQLClient.request(query, variables);
+
+        break;
+      } catch (error) {
+        tries += 1;
+        console.error('tries', tries);
+
+        if (tries === LIMIT) {
+          throw error;
+        }
+      }
+
+      await sleep(500);
+    } while (tries <= LIMIT);
 
     if (!data.getUserByAuthUid) {
       throw new Error('myInfo | can\'t get the data.getUserByAuthUid.');
