@@ -191,7 +191,10 @@ class MovementsService {
           id
           description
           amount
+          signedAmount
           closed
+          cloudId
+          imageUrl
           createdAt
           updatedAt
           movementType {

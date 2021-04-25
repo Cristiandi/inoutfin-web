@@ -124,6 +124,11 @@
               </label>
             </div>
 
+            <div v-if="data.imageUrl">
+              <pre></pre>
+              <a href="#" @click.prevent="showModal">Ver imagen</a>
+            </div>
+
             <div v-if="loading" class="text-center">
               <pre></pre>
 
@@ -151,6 +156,17 @@
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
+
+        <Modal v-if="isModalVisible" @close="closeModal">
+          <template v-slot:header>
+            <div class="text-center">
+              <h1>Imagen comprobante</h1>
+            </div>
+          </template>
+          <template v-slot:body>
+            <img :src="data.imageUrl" class="img-fluid" alt="...">
+          </template>
+        </Modal>
       </div>
     </div>
   </div>
@@ -175,12 +191,22 @@ small {
   border-radius: 0;
   border: 1px solid #000;
 }
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 </style>
 
 <script>
 import VueSelect from 'vue-next-select';
 import { mapState } from 'vuex';
 import { Field, Form } from 'vee-validate';
+
+import Modal from '../components/Modal';
 
 import { movementsService } from '../modules/movements/movements.service';
 import { movementCategoriesService } from '../modules/movement-categories/movement-categories.service';
@@ -198,12 +224,14 @@ export default {
         amount: null,
         movementCategoryId: null,
         wanToDelete: undefined,
-        closed: undefined
+        closed: undefined,
+        imageUrl: ''
       },
       loading: false,
       loadingFormData: true,
       movementCategories: [],
-      movementSign: undefined
+      movementSign: undefined,
+      isModalVisible: false
     };
   },
   computed: mapState({
@@ -212,7 +240,8 @@ export default {
   components: {
     Field,
     Form,
-    VueSelect
+    VueSelect,
+    Modal
   },
   setup () {
     return { updateMovementSchema };
@@ -238,6 +267,12 @@ export default {
     });
   },
   methods: {
+    showModal () {
+      this.isModalVisible = true;
+    },
+    closeModal () {
+      this.isModalVisible = false;
+    },
     async loadFormData ({ userAuthUid, id }) {
       try {
         this.loadingFormData = true;
@@ -257,6 +292,7 @@ export default {
         this.data.amount = amount;
         this.data.closed = closed;
         this.data.movementCategoryId = result?.movementCategory?.id;
+        this.data.imageUrl = result?.imageUrl;
 
         this.movementSign = result?.movementCategory?.sign;
       } catch (error) {
