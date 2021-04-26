@@ -16,6 +16,7 @@ import CreateOutcome from '../views/CreateOutcome.vue';
 import CreateIncome from '../views/CreateIncome.vue';
 import SeeMovements from '../views/SeeMovements.vue';
 import DetalledMovement from '../views/DetalledMovement.vue';
+import ChartByMonth from '../views/ChartByMonth.vue';
 
 const routes = [
   {
@@ -106,6 +107,14 @@ const routes = [
     path: '/detalled-movement/:id',
     name: 'DetalledMovement',
     component: DetalledMovement,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/chart-by-month',
+    name: 'ChartByMonth',
+    component: ChartByMonth,
     meta: {
       requiresAuth: true
     }

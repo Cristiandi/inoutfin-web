@@ -163,7 +163,7 @@ class MovementsService {
 
     const data = await graphQLClient.request(query, variables);
 
-    return {
+    return [
       ...data.getAllMovements.map((movement) => {
         return {
           ...movement,
@@ -171,7 +171,7 @@ class MovementsService {
           createdAt: dateFormat(new Date(movement.createdAt))
         };
       })
-    };
+    ];
   }
 
   async getOne ({ userAuthUid, id }) {
@@ -397,6 +397,36 @@ class MovementsService {
     return {
       ...data.uploadMovementImage
     };
+  }
+
+  async getIncomeVsOutcome ({ userAuthUid }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getIncomeVsOutcome (
+        $userAuthUid: String!
+      ) {
+        getIncomeOutcomeByMonth (
+          getIncomeOutcomeByMonthInput: {
+            userAuthUid: $userAuthUid
+          }
+        ) {
+          month
+          income
+          outcome
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    return [
+      ...data.getIncomeOutcomeByMonth
+    ];
   }
 }
 
