@@ -2,7 +2,7 @@
 	"background_color": "#ffffff",
 	"theme_color": "#333333",
 	"name": "Inoutfin",
-	"short_name": "IOF",
+	"short_name": "Inoutfin",
 	"display": "minimal-ui",
 	"start_url": "/",
 	"icons": [

@@ -14,6 +14,7 @@ import router from './router';
 import store from './store';
 
 // import './index.css';
+import './registerServiceWorker';
 
 let createdApp;
 
