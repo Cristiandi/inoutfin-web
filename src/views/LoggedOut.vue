@@ -26,7 +26,7 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100%;
-  height: 80vh;
+  height: 90vh;
 }
 
 img {
