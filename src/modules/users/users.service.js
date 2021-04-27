@@ -2,7 +2,7 @@ import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
 import { auth, googleAuthProvider } from '../../firebase';
-import { sleep } from '../../utils';
+import { setFirebaseProviderId, sleep } from '../../utils';
 
 class UsersService {
   async register ({ fullName, email, phoneNumber, password }) {
@@ -250,14 +250,16 @@ class UsersService {
   }
 
   async login ({ email, password }) {
-    const { user } = await auth.signInWithEmailAndPassword(email, password);
+    const result = await auth.signInWithEmailAndPassword(email, password);
 
-    if (!user.emailVerified) {
+    if (!result.user.emailVerified) {
       await this.logout();
       throw new Error(`the user does not verified the email ${email}`);
     }
 
-    return user;
+    setFirebaseProviderId(result.additionalUserInfo?.providerId);
+
+    return result.user;
   }
 
   async loginWithGoogle () {
@@ -285,6 +287,8 @@ class UsersService {
         phone
       });
     }
+
+    setFirebaseProviderId(result.additionalUserInfo?.providerId);
 
     return result.user;
   }
@@ -318,7 +322,7 @@ class UsersService {
       authUid
     };
 
-    const LIMIT = 10;
+    const LIMIT = 20;
     let tries = 0;
 
     let data;

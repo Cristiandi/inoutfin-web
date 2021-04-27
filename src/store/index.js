@@ -3,6 +3,7 @@ import { createStore } from 'vuex';
 import router from '../router';
 
 import { usersService } from '../modules/users/users.service';
+import { getFirebaseProviderId } from '@/utils';
 
 export default createStore({
   state: {
@@ -52,10 +53,13 @@ export default createStore({
       // TODO: get the user info from API
       const myInfo = await usersService.myInfo({ authUid: user.uid });
 
+      const providerId = getFirebaseProviderId();
+
       // set user in state
       commit('setUser', {
         ...user,
-        ...myInfo
+        ...myInfo,
+        providerId
       });
     },
     handleShowNavbar ({ commit }, showNavbar) {

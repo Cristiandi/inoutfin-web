@@ -62,30 +62,34 @@
 
             <hr />
 
-            <router-link
-              to="/change-email"
-              role="button"
-              class="btn btn-outline-dark form-control"
-              >CAMBIAR EMAIL</router-link
-            >
+            <div v-if="providerId === 'password'">
+              <router-link
+                to="/change-email"
+                role="button"
+                class="btn btn-outline-dark form-control"
+                >CAMBIAR EMAIL</router-link>
 
-            <pre></pre>
+              <pre></pre>
+            </div>
 
-            <router-link
-              to="/change-password"
-              role="button"
-              class="btn btn-outline-dark form-control"
-              >CAMBIAR CLAVE</router-link
-            >
+            <div v-if="providerId === 'password'">
+              <router-link
+                to="/change-password"
+                role="button"
+                class="btn btn-outline-dark form-control"
+                >CAMBIAR CLAVE</router-link>
 
-            <pre></pre>
+              <pre></pre>
+            </div>
 
-            <router-link
-              to="/change-phone"
-              role="button"
-              class="btn btn-outline-dark form-control"
-              >CAMBIAR TÉLEFONO</router-link
-            >
+            <div>
+              <router-link
+                to="/change-phone"
+                role="button"
+                class="btn btn-outline-dark form-control"
+                >CAMBIAR TÉLEFONO</router-link
+              >
+            </div>
 
             <hr />
 
@@ -151,6 +155,7 @@ export default {
       data: {
         fullName: ''
       },
+      providerId: '',
       loading: false
     };
   },
@@ -159,13 +164,14 @@ export default {
     Field
   },
   computed: mapState({
-    user: (state) => state.user
+    userFromState: (state) => state.user
   }),
   setup () {
     return { changeName };
   },
-  mounted () {
-    this.data.fullName = this.user?.fullName;
+  created () {
+    this.data.fullName = this.userFromState?.fullName;
+    this.providerId = this.userFromState?.providerId;
   },
   methods: {
     async onSubmit (args) {
@@ -174,10 +180,10 @@ export default {
 
         const { fullName } = this.data;
 
-        if (fullName === this.user.fullName) return;
+        if (fullName === this.userFromState.fullName) return;
 
         const { message } = await usersService.update({
-          authUid: this.user?.authUid,
+          authUid: this.userFromState?.authUid,
           fullName
         });
 
@@ -186,7 +192,7 @@ export default {
           queue: false
         });
 
-        this.user.fullName = fullName;
+        this.userFromState.fullName = fullName;
       } catch (error) {
         console.log(error);
         this.$toast.error(getErrorMessage(error) || error.message, {
