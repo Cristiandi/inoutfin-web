@@ -25,9 +25,14 @@
               </div>
               <hr />
               <div class="row">
-                <div class="col-3">
+                <div class="col-2">
                   <router-link to="/chart-by-month" class="link-light">
                     <BIconBarChartLine width="25" height="25" />
+                  </router-link>
+                </div>
+                <div class="col-2">
+                  <router-link to="/chart-outcome-per-categories" class="link-light">
+                    <BIconPieChart width="25" height="25" />
                   </router-link>
                 </div>
               </div>
@@ -89,7 +94,7 @@ a:hover {
 
 <script>
 import { mapState } from 'vuex';
-import { BIconBarChartLine } from 'bootstrap-icons-vue';
+import { BIconBarChartLine, BIconPieChart } from 'bootstrap-icons-vue';
 
 import { movementsService } from '../modules/movements/movements.service';
 
@@ -110,7 +115,8 @@ export default {
   },
   components: {
     MovementList,
-    BIconBarChartLine
+    BIconBarChartLine,
+    BIconPieChart
   },
   computed: mapState({
     userFromState: (state) => state.user

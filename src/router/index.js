@@ -17,6 +17,7 @@ import CreateIncome from '../views/CreateIncome.vue';
 import SeeMovements from '../views/SeeMovements.vue';
 import DetalledMovement from '../views/DetalledMovement.vue';
 import ChartByMonth from '../views/ChartByMonth.vue';
+import ChartOutcomePerCategories from '../views/ChartOutcomePerCategories';
 
 const routes = [
   {
@@ -115,6 +116,14 @@ const routes = [
     path: '/chart-by-month',
     name: 'ChartByMonth',
     component: ChartByMonth,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/chart-outcome-per-categories',
+    name: 'ChartOutcomePerCategories',
+    component: ChartOutcomePerCategories,
     meta: {
       requiresAuth: true
     }

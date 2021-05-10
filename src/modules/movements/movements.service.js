@@ -428,6 +428,42 @@ class MovementsService {
       ...data.getIncomeOutcomeByMonth
     ];
   }
+
+  async getOutcomePerCategories ({ userAuthUid, startDate, endDate }) {
+    const graphQLClient = await getClient();
+
+    const query = gql`
+      query getOutcomePerCategories (
+        $userAuthUid: String!
+        $startDate: String!
+        $endDate: String!
+      ) {
+        getOutcomePerCategories (
+          getOutcomePerCategoriesInput: {
+            userAuthUid: $userAuthUid
+            starDate: $startDate
+            endDate: $endDate
+          }
+        ) {
+          movementCategoryId
+          movementCategoryName
+          percentage
+        }
+      }
+    `;
+
+    const variables = {
+      userAuthUid,
+      startDate: startDate + ' 00:00:00',
+      endDate: endDate + ' 23:59:59'
+    };
+
+    const data = await graphQLClient.request(query, variables);
+
+    return [
+      ...data.getOutcomePerCategories
+    ];
+  }
 }
 
 export const movementsService = new MovementsService();
