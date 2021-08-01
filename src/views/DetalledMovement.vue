@@ -103,7 +103,7 @@
                 name="wanToDelete"
                 :value="true"
                 v-model="data.wanToDelete"
-                />
+              />
               <label class="form-check-label" for="wanToDelete">
                 ¿Eliminar movimiento?
               </label>
@@ -118,7 +118,7 @@
                 name="closed"
                 :value="true"
                 v-model="data.closed"
-                />
+              />
               <label class="form-check-label" for="closed">
                 ¿Movimiento cerrado?
               </label>
@@ -164,7 +164,7 @@
             </div>
           </template>
           <template v-slot:body>
-            <img :src="data.imageUrl" class="img-fluid" alt="...">
+            <img :src="data.imageUrl" class="img-fluid" alt="..." />
           </template>
         </Modal>
       </div>
@@ -277,24 +277,24 @@ export default {
       try {
         this.loadingFormData = true;
 
-        const result = await movementsService.getOne({
+        const currentMovement = await movementsService.getOne({
           userAuthUid,
           id
         });
 
-        const { description, amount, closed } = result;
+        const { description, amount, closed } = currentMovement;
 
         this.movementCategories = await movementCategoriesService.getAll({
-          sign: result?.movementType?.sign
+          sign: currentMovement?.movementType?.sign
         });
 
         this.data.description = description;
         this.data.amount = amount;
         this.data.closed = closed;
-        this.data.movementCategoryId = result?.movementCategory?.id;
-        this.data.imageUrl = result?.imageUrl;
+        this.data.movementCategoryId = currentMovement?.movementCategory?.id;
+        this.data.imageUrl = currentMovement?.imageUrl;
 
-        this.movementSign = result?.movementCategory?.sign;
+        this.movementSign = currentMovement?.movementCategory?.sign;
       } catch (error) {
         this.$toast.error('problem loading the movements.', {
           position: 'top-right',
@@ -308,6 +308,15 @@ export default {
     async onSubmit (values, { resetForm }) {
       try {
         this.loading = true;
+
+        if (!this.data.movementCategoryId) {
+          this.$toast.error('Por favor selecciona una categoria', {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
 
         const { wanToDelete } = this.data;
 

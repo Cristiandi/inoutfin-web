@@ -274,9 +274,7 @@ export default {
       }
     },
     onChange (image) {
-      console.log('New picture selected!');
       if (image) {
-        console.log('Picture loaded.');
         this.image = image;
       } else {
         console.log('FileReader API not supported: use the <form>, Luke!');

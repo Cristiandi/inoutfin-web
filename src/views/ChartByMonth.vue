@@ -50,7 +50,6 @@ export default {
   }),
   created () {
     if (!this.userFromState?.uid) {
-      console.log('hi there');
       return;
     }
 

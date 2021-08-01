@@ -194,7 +194,6 @@ export default {
 
         this.userFromState.fullName = fullName;
       } catch (error) {
-        console.log(error);
         this.$toast.error(getErrorMessage(error) || error.message, {
           position: 'top-right',
           queue: false

@@ -31,10 +31,10 @@ export default {
 
     this.planetChart = new Chart(ctx, this.planetChartData);
 
-    console.log('chart id', this.planetChart.id);
+    // console.log('chart id', this.planetChart.id);
   },
   beforeUnmount () {
-    console.log('leaving');
+    // console.log('leaving');
     this.planetChart?.destroy();
   }
 };

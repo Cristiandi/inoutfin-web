@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 export const createOutcomeMovementSchema = Yup.object().shape({
   description: Yup.string().min(5).required(),
   amount: Yup.number().positive().required(),
-  movementCategoryId: Yup.number().integer().positive().required(),
+  movementCategoryId: Yup.number().integer().positive(),
   image: Yup.mixed()
     .test('fileSize', 'The file is too large', (value) => {
       if (!value?.length) return true; // attachment is optional

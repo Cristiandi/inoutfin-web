@@ -117,8 +117,6 @@ export const dateFormat = (value) => {
 
   const formatter = new Intl.DateTimeFormat(locale);
 
-  console.log();
-
   return formatter.format(value);
 };
 
