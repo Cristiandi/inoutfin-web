@@ -15,7 +15,7 @@
       </div>
       <div class="col-1">
         <div v-if="movement.imageUrl">
-          <span class="badge rounded-pill bg-info">🗸</span>
+          <BIconCheck width="20" height="20" />
         </div>
       </div>
       <div class="col-5">
@@ -42,6 +42,7 @@
 </style>
 
 <script>
+import { BIconCheck } from 'bootstrap-icons-vue';
 import { currencyFormat, dateFormat } from '../utils';
 
 const defMovements = [
@@ -84,6 +85,9 @@ export default {
       type: Object,
       default: () => defMovements
     }
+  },
+  components: {
+    BIconCheck
   }
 };
 </script>
