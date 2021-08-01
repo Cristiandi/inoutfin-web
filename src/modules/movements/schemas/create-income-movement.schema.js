@@ -7,7 +7,7 @@ export const createIncomeMovementSchema = Yup.object().shape({
   image: Yup.mixed()
     .test('fileSize', 'The file is too large', (value) => {
       if (!value?.length) return true; // attachment is optional
-      return value[0].size <= 3e+6;
+      return value[0].size <= 6e+6;
     })
     .test('fileExt', 'The file ext is not allowed', (value) => {
       if (!value) return true;
