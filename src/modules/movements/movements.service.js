@@ -151,6 +151,7 @@ class MovementsService {
                 description
                 sign
             }
+            imageUrl
         }
       }
     `;

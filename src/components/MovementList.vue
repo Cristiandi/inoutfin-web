@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row" v-for="movement in movements" :key="movement.id">
-      <div class="col-3">
+      <div class="col-1">
         <div v-if="movement.movementType.sign < 0">
           <router-link :to="'/detalled-movement/' + movement.id">
             <span class="badge rounded-pill bg-danger">M</span>
@@ -13,13 +13,27 @@
           </router-link>
         </div>
       </div>
+      <div class="col-1">
+        <div v-if="movement.imageUrl">
+          <span class="badge rounded-pill bg-info">🗸</span>
+        </div>
+      </div>
       <div class="col-5">
-        <p><small><strong>{{movement.description}}</strong></small></p>
+        <p>
+          <small
+            ><strong>{{ movement.description }}</strong></small
+          >
+        </p>
       </div>
-      <div class="col-4 text-end" v-tooltip="'creado el ' + movement.createdAt">
-        <p><small>{{movement.movementType.sign > 0 ? '+' : '-'}}{{movement.amount}}</small></p>
+      <div class="col-5 text-end" v-tooltip="'creado el ' + movement.createdAt">
+        <p>
+          <small
+            >{{ movement.movementType.sign > 0 ? "+" : "-"
+            }}{{ movement.amount }}</small
+          >
+        </p>
       </div>
-      <hr>
+      <hr />
     </div>
   </div>
 </template>
