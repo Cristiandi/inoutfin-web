@@ -382,6 +382,7 @@ class MovementsService {
           file: $file
         ) {
           id
+          imageUrl
         }
       }
     `;

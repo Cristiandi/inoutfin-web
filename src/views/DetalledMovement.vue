@@ -94,6 +94,30 @@
               </div>
             </div>
 
+            <div>
+              <div class="mb-3">
+                <div class="row">
+                  <div class="col-6">
+                    <label for="image" class="fw-bold">Comprobante</label>
+                  </div>
+                  <div class="col-6 text-end">
+                    <small for="image" class="text-muted fw-light">
+                      Una imagen.
+                    </small>
+                  </div>
+                </div>
+                <Field
+                  v-model="data.image"
+                  type="file"
+                  class="form-control form-control-sm"
+                  id="image"
+                  name="image"
+                  rules="image"
+                />
+                <small class="validation">{{ errors.image }}</small>
+              </div>
+            </div>
+
             <div class="form-check">
               <pre></pre>
               <Field
@@ -225,7 +249,8 @@ export default {
         movementCategoryId: null,
         wanToDelete: undefined,
         closed: undefined,
-        imageUrl: ''
+        imageUrl: '',
+        image: null
       },
       loading: false,
       loadingFormData: true,
@@ -320,6 +345,15 @@ export default {
 
         const { wanToDelete } = this.data;
 
+        if (!this.movementSign) {
+          this.$toast.error('can not determinate the movement sign.', {
+            position: 'top-right',
+            queue: false
+          });
+
+          return;
+        }
+
         if (wanToDelete) {
           const { message } = await movementsService.remove({
             userAuthUid: this.userFromState?.uid,
@@ -334,17 +368,10 @@ export default {
           return;
         }
 
-        if (!this.movementSign) {
-          this.$toast.error('can not determinate the movement sign.', {
-            position: 'top-right',
-            queue: false
-          });
-
-          return;
-        }
+        let movementId = null;
 
         if (this.movementSign === 1) {
-          const { message } = await movementsService.updateIncome({
+          const { message, id } = await movementsService.updateIncome({
             userAuthUid: this.userFromState?.uid,
             id: parseInt(this.$route.params.id, 10),
             description: this.data.description,
@@ -353,14 +380,14 @@ export default {
             movementCategoryId: this.data.movementCategoryId
           });
 
+          movementId = id;
+
           this.$toast.success(message, {
             position: 'top-right',
             queue: false
           });
-
-          return;
         } else if (this.movementSign === -1) {
-          const { message } = await movementsService.updateOutcome({
+          const { message, id } = await movementsService.updateOutcome({
             userAuthUid: this.userFromState?.uid,
             id: parseInt(this.$route.params.id, 10),
             description: this.data.description,
@@ -369,12 +396,28 @@ export default {
             movementCategoryId: this.data.movementCategoryId
           });
 
+          movementId = id;
+
           this.$toast.success(message, {
             position: 'top-right',
             queue: false
           });
+        }
 
-          return;
+        const { image } = this.data;
+        if (image) {
+          const file = image[0];
+
+          movementsService
+            .uploadFile({
+              userAuthUid: this.userFromState?.uid,
+              id: movementId,
+              file
+            })
+            .then(({ imageUrl }) => {
+              this.data.imageUrl = imageUrl;
+            })
+            .catch((err) => console.error(err));
         }
       } catch (error) {
         this.$toast.error(getErrorMessage(error) || error.message, {
