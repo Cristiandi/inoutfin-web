@@ -20,7 +20,7 @@
     "chart.js": "3.5.1",
     "core-js": "3.16.3",
     "express": "4.17.1",
-    "firebase": "8.10.0",
+    "firebase": "9.0.0",
     "graphql": "15.5.1",
     "graphql-request": "3.5.0",
     "register-service-worker": "1.7.2",
