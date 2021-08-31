@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import 'v-tooltip/dist/v-tooltip.css';
 
-import { auth } from './firebase';
+import { auth, onAuthStateChanged } from './firebase';
 
 import App from './App.vue';
 import router from './router';
@@ -18,7 +18,7 @@ import './registerServiceWorker';
 
 let createdApp;
 
-auth.onAuthStateChanged(user => {
+onAuthStateChanged(auth, user => {
   if (!createdApp) {
     createdApp = createApp(App)
       .use(store)

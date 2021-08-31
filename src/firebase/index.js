@@ -1,5 +1,11 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup
+} from 'firebase/auth';
 
 import environment from '../environment';
 
@@ -16,13 +22,16 @@ const config = {
   measurementId: environment.FIREBASE_MEASUREMENT_ID
 };
 
-firebase.initializeApp(config);
+const firebaseApp = initializeApp(config);
 
-const auth = firebase.auth();
+const auth = getAuth(firebaseApp);
 
-const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+const googleAuthProvider = new GoogleAuthProvider();
 
 export {
   auth,
-  googleAuthProvider
+  onAuthStateChanged,
+  googleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup
 };
