@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
-import { auth, googleAuthProvider } from '../../firebase';
+import { auth, googleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from '../../firebase';
 import { setFirebaseProviderId, sleep } from '../../utils';
 
 class UsersService {
@@ -250,7 +250,7 @@ class UsersService {
   }
 
   async login ({ email, password }) {
-    const result = await auth.signInWithEmailAndPassword(email, password);
+    const result = await signInWithEmailAndPassword(auth, email, password);
 
     if (!result.user.emailVerified) {
       await this.logout();
@@ -270,7 +270,7 @@ class UsersService {
     googleAuthProvider.addScope('profile');
     googleAuthProvider.addScope('email');
 
-    const result = await auth.signInWithPopup(googleAuthProvider);
+    const result = await signInWithPopup(auth, googleAuthProvider);
 
     const isNew = result?.additionalUserInfo?.isNewUser;
 
