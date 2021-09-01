@@ -259,12 +259,16 @@ class UsersService {
   async login ({ email, password }) {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
-    if (!result.user.emailVerified) {
+    const { user } = result;
+
+    if (!user.emailVerified) {
       await this.logout();
       throw new Error(`the user does not verified the email ${email}`);
     }
 
-    setFirebaseProviderId(result.additionalUserInfo?.providerId);
+    const { providerId } = result;
+
+    setFirebaseProviderId(providerId);
 
     return result.user;
   }
