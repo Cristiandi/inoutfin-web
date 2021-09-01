@@ -1,7 +1,14 @@
 import { gql } from 'graphql-request';
 
 import { getClient } from '../../graphql';
-import { auth, googleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from '../../firebase';
+import {
+  auth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  googleAuthProvider,
+  getAdditionalUserInfo
+} from '../../firebase';
 import { setFirebaseProviderId, sleep } from '../../utils';
 
 class UsersService {
@@ -263,6 +270,8 @@ class UsersService {
   }
 
   async loginWithGoogle () {
+    // console.log('LOGIN WITH GOOGLE');
+
     googleAuthProvider.setCustomParameters({
       prompt: 'select_account'
     });
@@ -272,13 +281,18 @@ class UsersService {
 
     const result = await signInWithPopup(auth, googleAuthProvider);
 
-    const isNew = result?.additionalUserInfo?.isNewUser;
+    const additionalUserInfo = await getAdditionalUserInfo(result);
 
-    if (isNew) {
-      const authUid = result.user.uid;
-      const email = result.user.email;
-      const fullName = result?.additionalUserInfo?.profile?.name || result?.user?.displayName;
-      const phone = result.user?.phoneNumber || null;
+    const { isNewUser } = additionalUserInfo;
+
+    const { user } = result;
+
+    if (isNewUser) {
+      // console.log('NEW USER');
+      const authUid = user.uid;
+      const email = user.email;
+      const fullName = additionalUserInfo.profile.name || user.displayName;
+      const phone = user.phoneNumber || null;
 
       await this.registerFromAuthUid({
         authUid,
@@ -288,9 +302,9 @@ class UsersService {
       });
     }
 
-    setFirebaseProviderId(result.additionalUserInfo?.providerId);
+    setFirebaseProviderId(result.providerId);
 
-    return result.user;
+    return user;
   }
 
   async logout () {
@@ -322,7 +336,7 @@ class UsersService {
       authUid
     };
 
-    const LIMIT = 20;
+    const LIMIT = 50;
     let tries = 0;
 
     let data;

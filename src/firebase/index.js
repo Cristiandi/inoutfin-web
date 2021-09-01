@@ -4,7 +4,8 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signInWithPopup
+  signInWithPopup,
+  getAdditionalUserInfo
 } from 'firebase/auth';
 
 import environment from '../environment';
@@ -31,7 +32,9 @@ const googleAuthProvider = new GoogleAuthProvider();
 export {
   auth,
   onAuthStateChanged,
+  GoogleAuthProvider,
   googleAuthProvider,
   signInWithEmailAndPassword,
-  signInWithPopup
+  signInWithPopup,
+  getAdditionalUserInfo
 };
