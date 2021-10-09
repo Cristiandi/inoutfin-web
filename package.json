@@ -50,7 +50,7 @@
     "eslint-plugin-promise": "5.1.0",
     "eslint-plugin-standard": "4.1.0",
     "eslint-plugin-vue": "7.19.1",
-    "lint-staged": "11.1.2"
+    "lint-staged": "11.2.1"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
