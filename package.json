@@ -15,7 +15,7 @@
   "dependencies": {
     "@meforma/vue-toaster": "1.2.2",
     "@popperjs/core": "2.10.2",
-    "bootstrap": "5.1.1",
+    "bootstrap": "5.1.2",
     "bootstrap-icons-vue": "0.7.0",
     "chart.js": "3.5.1",
     "core-js": "3.18.2",
