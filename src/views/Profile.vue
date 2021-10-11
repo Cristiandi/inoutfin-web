@@ -62,7 +62,7 @@
 
             <hr />
 
-            <div v-if="providerId === 'password'">
+            <div v-if="providerId === 'firebase'">
               <router-link
                 to="/change-email"
                 role="button"
@@ -72,7 +72,7 @@
               <pre></pre>
             </div>
 
-            <div v-if="providerId === 'password'">
+            <div v-if="providerId === 'firebase'">
               <router-link
                 to="/change-password"
                 role="button"

@@ -259,6 +259,8 @@ class UsersService {
   async login ({ email, password }) {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
+    console.log('LOGIN RESULT', result);
+
     const { user } = result;
 
     if (!user.emailVerified) {
@@ -266,7 +268,9 @@ class UsersService {
       throw new Error(`the user does not verified the email ${email}`);
     }
 
-    const { providerId } = result;
+    const { providerId } = user;
+
+    console.log('providerId', providerId);
 
     setFirebaseProviderId(providerId);
 
@@ -305,6 +309,8 @@ class UsersService {
         phone
       });
     }
+
+    console.log('LOGIN WITH GOOGLE RESULT', result);
 
     setFirebaseProviderId(result.providerId);
 
