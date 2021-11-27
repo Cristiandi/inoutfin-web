@@ -106,42 +106,13 @@
   </div>
 </template>
 
-<style scoped>
-.centered {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 95vh;
-}
-
-.validation {
-  color: red;
-}
-
-input {
-  border-radius: 0;
-  border: 1px solid #000;
-}
-
-small {
-  font-size: 8pt;
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-</style>
-
 <script>
 import { Field, Form } from 'vee-validate';
 import { BIconArrowLeft, BIconGoogle } from 'bootstrap-icons-vue';
 
 import { getFromObjectPathParsed } from '../utils';
 
+import { usersService } from '../modules/users/users.service';
 import { loginUser } from '../modules/users/schemas/login-user.schema';
 
 export default {
@@ -172,7 +143,7 @@ export default {
 
         const { email, password } = this.data;
 
-        await this.$store.dispatch('login', {
+        usersService.login({
           email,
           password
         });
@@ -194,7 +165,8 @@ export default {
     async loginWithGoogle () {
       try {
         this.loginLoading = true;
-        await this.$store.dispatch('loginWithGoogle');
+
+        await usersService.loginWithGoogle();
       } catch (error) {
         console.error(error);
         this.$toast.error(
@@ -210,3 +182,33 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.centered {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 95vh;
+}
+
+.validation {
+  color: red;
+}
+
+input {
+  border-radius: 0;
+  border: 1px solid #000;
+}
+
+small {
+  font-size: 8pt;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
