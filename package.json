@@ -27,7 +27,7 @@
     "sass-loader": "12.1.0",
     "serve-static": "1.14.1",
     "v-tooltip": "4.0.0-beta.2",
-    "vee-validate": "4.5.6",
+    "vee-validate": "4.5.7",
     "vue": "3.2.24",
     "vue-next-select": "2.10.2",
     "vue-router": "4.0.12",
