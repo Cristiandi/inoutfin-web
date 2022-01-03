@@ -19,7 +19,7 @@
     "bootstrap-icons-vue": "0.8.0",
     "chart.js": "3.6.2",
     "core-js": "3.19.3",
-    "express": "4.17.1",
+    "express": "4.17.2",
     "firebase": "9.6.1",
     "graphql": "16.1.0",
     "graphql-request": "3.7.0",
