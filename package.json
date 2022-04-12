@@ -44,7 +44,7 @@
     "@vue/cli-service": "5.0.4",
     "@vue/compiler-sfc": "3.2.31",
     "@vue/eslint-config-standard": "6.1.0",
-    "eslint": "8.8.0",
+    "eslint": "8.13.0",
     "eslint-plugin-import": "2.25.4",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
