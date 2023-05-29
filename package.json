@@ -30,7 +30,7 @@
     "vee-validate": "4.5.10",
     "vue": "3.2.37",
     "vue-next-select": "2.10.4",
-    "vue-router": "4.0.14",
+    "vue-router": "4.2.2",
     "vuex": "4.0.2",
     "yup": "1.0.0-beta.3"
   },
